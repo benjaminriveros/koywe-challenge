@@ -1,10 +1,23 @@
+import UserDal from '@dal/type/user.dal';
+import LoginFacade from '@facades/user.facade';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { JwtModule } from '@nestjs/jwt';
+import Connection from './connection';
+import { AuthController } from './controller/auth.controller';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [       
+        JwtModule.register({
+            global: true,
+            secret: process.env.JWT_SECRET_KEY,
+            signOptions: { expiresIn: '12h' },
+        }),
+    ],
+    controllers: [AuthController],
+    providers: [
+        Connection,
+        LoginFacade,
+        UserDal,
+    ],
 })
 export class AppModule {}
